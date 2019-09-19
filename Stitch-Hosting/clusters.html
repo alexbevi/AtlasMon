@@ -26,14 +26,14 @@
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav ml-auto" id="navlist">
                         <ul class='navbar-nav'>
-                            <li class="nav-item"><a class="nav-item nav-link btn btn-outline-success btn-lg" onclick="$('#newModal').modal('show');"><i class='fa fa-plus-circle' aria-hidden='true'></i></a></li>';
+                            <li class="nav-item"><a class="nav-item nav-link btn btn-outline-success btn-lg" onclick="$('#newModal').modal('show');"><i class='fa fa-plus-circle' aria-hidden='true'></i></a></li>
                         </ul>      
                     </div>
                 </div>
             </nav>
 
             <table class="table table-hover" style="margin-top:15px;">
-                <thead class="thead-dark"><tr><th>Email</th><th>Project</th><th>Cluster</th><th>Created</th><th>Modified</th><th>Note</th><th>Flags</th></tr></thead>
+                <thead class="thead-dark"><tr><th>Email</th><th>Project/Cluster</th><th>Created</th><th>Modified</th><th>Note</th><th>Flags</th></tr></thead>
                 <tbody id="tbody"></tbody>
             </table>
         </div>
@@ -83,6 +83,14 @@
                 AwsRequest
             } = stitch;
 
+            function trunc(s) {
+                if(s.length >18) {
+                    return s.substring(0,18);
+                } else {
+                    return s;
+                }
+            }
+
             function presentResult(docs) {
                 docs.map(doc => {
                     var html = "";
@@ -91,12 +99,15 @@
                     else {  html+="<tr>"; }
 
                     if(doc.hasOwnProperty('owner')) {
-                        html+="<td>"+doc.owner.email+"</td>";
+                        var eml = doc.owner.email.split('@');
+                        html+="<td>"+eml[0]+"</td>";
                     } else {
-                        html+="<td>"+'AUTODISCOVERED'+"</td>";
+                        html+="<td>"+'UNKWN'+"</td>";
                     }
-                    html+="<td>"+doc.project+"</td>";
-                    html+="<td>"+doc.name+"</td>";
+                    var lnk = "#";
+                    if (doc.hasOwnProperty('projectId')) { lnk = "https://cloud.mongodb.com/v2/"+doc.projectId+"#clusters";}
+                    
+                    html+="<td><a href='"+lnk+"' target='_blank'>"+trunc(doc.project)+"/"+trunc(doc.name)+"</a></td>";
                     html+="<td>"+doc.created.yyyymmdd()+"</td>";
                     html+="<td>"+doc.updated.yyyymmdd()+"</td>";
                     html+="<td>"+(doc.note||'')+"</td>";
@@ -115,7 +126,7 @@
 
             function query() {
                 var pipeline = [
-                    {$sort:{"owner.email":-1}}
+                    {$sort:{"owner.email":1, project:1, name:1}}
                 ];
                 db.collection("clusters").aggregate(pipeline).asArray().then(presentResult).catch(err => {console.error(err)});
             }
