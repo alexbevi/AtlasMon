@@ -8,6 +8,10 @@
             "apply_when": {
                 "owner.id": "%%user.id"
             },
+            "fields": {
+                "owner": {},
+                "updated": {}
+            },
             "read": true,
             "write": true,
             "insert": true,
@@ -26,6 +30,10 @@
                     }
                 }
             },
+            "fields": {
+                "owner": {},
+                "updated": {}
+            },
             "write": true,
             "insert": false,
             "delete": false,
@@ -34,6 +42,14 @@
         {
             "name": "default",
             "apply_when": {},
+            "fields": {
+                "owner": {
+                    "write": true
+                },
+                "updated": {
+                    "write": true
+                }
+            },
             "read": true,
             "insert": false,
             "delete": false,

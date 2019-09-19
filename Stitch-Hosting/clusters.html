@@ -90,15 +90,22 @@
                     if(!doc.noReap) { html += '<tr class="table-danger">';}
                     else {  html+="<tr>"; }
 
-                    html+="<td>"+doc.owner.email+"</td>";
+                    if(doc.hasOwnProperty('owner')) {
+                        html+="<td>"+doc.owner.email+"</td>";
+                    } else {
+                        html+="<td>"+'AUTODISCOVERED'+"</td>";
+                    }
                     html+="<td>"+doc.project+"</td>";
                     html+="<td>"+doc.name+"</td>";
                     html+="<td>"+doc.created.yyyymmdd()+"</td>";
                     html+="<td>"+doc.updated.yyyymmdd()+"</td>";
-                    html+="<td>"+doc.note+"</td>";
+                    html+="<td>"+(doc.note||'')+"</td>";
                     html+="<td>";
                         html += "<button class='btn btn-danger btn-sm' onclick=\"deleteDoc('"+doc._id+"')\"><i class='fa fa-trash' aria-hidden='true'></i></button>"
                         html += "&nbsp; <button class='btn btn-warning btn-sm' onclick=\"toggleReap('"+doc._id+"', "+doc.noReap+")\"><i class='fa fa-times-circle' aria-hidden='true'></i></button>"
+                        if(!doc.hasOwnProperty('owner')) {
+                            html += "&nbsp; <button class='btn btn-info btn-sm' onclick=\"takeOnwership('"+doc._id+"')\"><i class='fa fa-user-plus' aria-hidden='true'></i></button>"
+                        }
                     html+="</td>";
 
                     html+="</tr>";
@@ -129,8 +136,24 @@
 
             function toggleReap(id,tf) {
                 var oid = new stitch.BSON.ObjectId(id);
-                tf = !tf;
-                db.collection("clusters").updateOne({"_id":oid},{"$set":{"noReap":tf}}).then(result => { location.reload(true); }).catch(err => console.log(err));
+
+                var delta = {};
+                delta.updated = new Date();
+                delta.noReap = !tf;
+                
+                db.collection("clusters").updateOne({"_id":oid},{"$set":delta}).then(result => { location.reload(true); }).catch(err => console.log(err));
+            }
+
+            function takeOnwership(id) {
+                var oid = new stitch.BSON.ObjectId(id);
+
+                var delta = {};
+                delta.updated = new Date();
+                delta.owner = {};
+                delta.owner.id = client.auth.authInfo.userId;
+                delta.owner.email = client.auth.authInfo.userProfile.data.email;
+                
+                db.collection("clusters").updateOne({"_id":oid},{"$set":delta}).then(result => { location.reload(true); }).catch(err => console.log(err));
             }
 
             function saveNew() {
