@@ -1,0 +1,146 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Sign In</title>
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" >
+    <script src="https://use.fontawesome.com/4132d47bbc.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.4.0/stitch.js"></script>
+    <script src="conf/conf.js"></script>
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+    html,
+    body {
+    height: 100%;
+    }
+
+    body {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
+    background-image: url("resources/bg_leaf.jpg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    }
+
+    .form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+    background-color: #ffffff; 
+    box-shadow: inset 0 0 0 3000px rgba(255,255,255,0.3);
+    opacity: 0.85;
+    filter: alpha(opacity=85);
+    }
+    .form-signin .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+    }
+    .form-signin .form-control:focus {
+    z-index: 2;
+    }
+    .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    }
+    .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    }
+    </style>
+  </head>
+  <body class="text-center">
+    <form class="form-signin" id="form-signin">
+        <h1 class="h3 mb-3 font-weight-normal">Sign In</h1>
+        <br>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="txt_un" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="txt_pw" class="form-control" placeholder="Password" required>
+        
+        <button class="btn btn-lg btn-success btn-block" id="btn_submit">Sign in</button>
+
+        <br><br>
+        <small><a href="javascript:passwordReset();">I forgot my password</a></small>
+    </form>
+
+    <script>
+        const client = stitch.Stitch.initializeDefaultAppClient(GLOBALSTITCHAPP);
+        const mongodb = client.getServiceClient(stitch.RemoteMongoClient.factory,"mongodb-atlas");
+        const db = mongodb.db(GLOBALDBNAME);
+        
+        $('#form-signin').submit(function(e) {
+            e.preventDefault();    
+            login();
+            return false;
+        });
+        function login() {
+            const credential = new stitch.UserPasswordCredential($('#txt_un').val(), $('#txt_pw').val())
+            client.auth.loginWithCredential(credential)
+            // Returns a promise that resolves to the authenticated user
+            .then(authedUser => goodLogin(authedUser))
+            .catch(err => loginFail(err))
+        }
+
+        function goodLogin(authedUser) {
+            console.log(`successfully logged in with id: ${authedUser.id}`);
+
+            window.location = "clusters.html";
+        }
+        
+        function loginFail(err) {
+            console.error(`login failed with error: ${err}`);
+            var msg = $('<div class="alert alert-danger" role="alert" id="">Login failed!</div>').hide().fadeIn(750);
+            $('#form-signin').prepend(msg);
+        }
+
+        function passwordReset() {
+          if($('#txt_un').val().length > 0 ) {
+            const emailPassClient = client.auth.getProviderClient(stitch.UserPasswordAuthProviderClient.factory);
+
+            emailPassClient.sendResetPasswordEmail($('#txt_un').val()).then(() => {
+              var msg = $('<div class="alert alert-success" role="alert" id="">Password reset sent to your email!</div>').hide().fadeIn(750);
+              $('#form-signin').prepend(msg);
+            }).catch(err => {
+              var msg = $('<div class="alert alert-danger" role="alert" id="">Password reset failed!</div>').hide().fadeIn(750);
+              $('#form-signin').prepend(msg);
+              console.log(err);
+            });
+          }
+          else {
+            alert("Fill out your email address!");
+          }
+        }
+    </script>
+</body>
+</html>

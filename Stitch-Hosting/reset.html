@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <title>Reset</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" >
+        <script src="https://use.fontawesome.com/4132d47bbc.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.4.0/stitch.js"></script>
+        <script src="../conf/conf.js"></script>
+    </head>
+    <body>
+            <div id="response"></div>
+            <div>
+                <form class="form-signin" id="form-signin">
+                    <h1>Enter New Password</h1>
+                    <label for="inputPassword" class="sr-only">Password</label>
+                    <input type="password" id="txt_pw" class="form-control" placeholder="Password" required>
+                    <button class="btn btn-lg btn-success btn-block" id="btn_submit">Reset</button>
+                </form>
+            </div>
+            <script>
+                const client = stitch.Stitch.initializeDefaultAppClient(GLOBALSTITCHAPP);
+                const url = window.location.search;
+                const params = new URLSearchParams(url);
+
+                const token = params.get('token');
+                const tokenId = params.get('tokenId');
+
+                $('#form-signin').submit(function(e) {
+                    e.preventDefault();    
+                    resetPW();
+                    return false;
+                });
+                function resetPW() {
+                    const emailPassClient = client.auth.getProviderClient(stitch.UserPasswordAuthProviderClient.factory);
+
+                    emailPassClient.resetPassword(token, tokenId, $('#txt_pw').val()).then(() => {
+                        console.log("Successfully reset password!");
+                        $('#response').html("It worked!");
+                    }).catch(err => {
+                        $('#response').html("Reset failed!");
+                        console.log("Error resetting password:", err);
+                    });
+                }
+            </script>
+    </body>
+</html>

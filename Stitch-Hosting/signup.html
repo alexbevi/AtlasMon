@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <title>Sign Up</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" >
+        <script src="https://use.fontawesome.com/4132d47bbc.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.4.0/stitch.js"></script>
+        <script src="../conf/conf.js"></script>
+        <style>
+                body {
+                    padding-top: 40px;
+                    padding-bottom: 40px;
+                    background-color: #ccc;
+                }
+        </style>
+    </head>
+    <body>
+            <div class="container">
+                <h1 id="heading">Register</h1>
+                <label for="txt_un">Username:</label>
+                <input type="text" name="txt_un" id="txt_un" class="form-control" />
+                <label for="txt_pw">Password:</label>
+                <input type="password" name="txt_pw" id="txt_pw" class="form-control" />
+                <div id="response"></div>
+                <br />
+                <button onclick="registerUser();return false;"  class="btn btn-lg btn-success">Register</button>
+            </div>
+        <script>
+            const client = stitch.Stitch.initializeDefaultAppClient(GLOBALSTITCHAPP);
+            function registerUser() {
+                const emailPassClient = client.auth.getProviderClient(stitch.UserPasswordAuthProviderClient.factory);
+
+                    emailPassClient.registerWithEmail($('#txt_un').val(), $('#txt_pw').val())
+                        .then(() => {
+                            $('#response').html("Successfully sent account confirmation email!");
+                            $('button').hide();
+                        })
+                        .catch(err => {
+                            $('#response').html("Error registering new user:");
+                            console.log( err);
+                        });
+            }
+</script>
+    </body>
+</html>
