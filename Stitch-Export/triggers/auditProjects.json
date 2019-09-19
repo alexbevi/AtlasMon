@@ -1,0 +1,10 @@
+{
+    "id": "5d83a667e917d606bf4bb26b",
+    "name": "auditProjects",
+    "type": "SCHEDULED",
+    "config": {
+        "schedule": "0 2 * * *"
+    },
+    "function_name": "generateDailyUseLog",
+    "disabled": false
+}

@@ -1,0 +1,6 @@
+{
+    "id": "5d839fa8e917d606bf492585",
+    "name": "apiRoot",
+    "value": "https://cloud.mongodb.com/api/atlas/v1.0/",
+    "from_secret": false
+}

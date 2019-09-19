@@ -33,7 +33,7 @@
             </nav>
 
             <table class="table table-hover" style="margin-top:15px;">
-                <thead class="thead-dark"><tr><th>User</th><th>Cluster</th><th>Created</th><th>Modified</th><th>Note</th><th>Flags</th></tr></thead>
+                <thead class="thead-dark"><tr><th>Email</th><th>Project</th><th>Cluster</th><th>Created</th><th>Modified</th><th>Note</th><th>Flags</th></tr></thead>
                 <tbody id="tbody"></tbody>
             </table>
         </div>
@@ -48,7 +48,9 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" class="form-control" id="txt_edit" >
+                    <label for="txt_project">Project Name</label>
+                    <input type="text" class="form-control" id="txt_project" >
+
                     <label for="txt_name">Cluster Name</label>
                     <input type="text" class="form-control" id="txt_name" >
 
@@ -89,6 +91,7 @@
                     else {  html+="<tr>"; }
 
                     html+="<td>"+doc.owner.email+"</td>";
+                    html+="<td>"+doc.project+"</td>";
                     html+="<td>"+doc.name+"</td>";
                     html+="<td>"+doc.created.yyyymmdd()+"</td>";
                     html+="<td>"+doc.updated.yyyymmdd()+"</td>";
@@ -135,6 +138,7 @@
                 doc.created = new Date();
                 doc.updated = new Date();
                 doc.name = $('#txt_name').val();
+                doc.project = $('#txt_project').val();
                 doc.owner = {};
                 doc.owner.id = client.auth.authInfo.userId;
                 doc.owner.email = client.auth.authInfo.userProfile.data.email;
