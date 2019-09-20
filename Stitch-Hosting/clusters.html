@@ -42,12 +42,12 @@
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">Loading Clusters</h5>
+                  <h5 class="modal-title" id="ctr_modaltitle">Loading Clusters</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="ctr_modalbody" style="text-align: center;">
                     <div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>
                 </div>
                 <div class="modal-footer">
@@ -108,13 +108,13 @@
                     html+="<td>"+doc.created.yyyymmdd()+"</td>";
                     html+="<td>"+doc.updated.yyyymmdd()+"</td>";
                     html+="<td>";
-                        //html += "<button class='btn btn-danger btn-sm' onclick=\"deleteDoc('"+doc._id+"')\"><i class='fa fa-trash' aria-hidden='true'></i></button>"
-                        html += "<button title='Toggle Reapable' class='btn btn-warning btn-sm' onclick=\"toggleReap('"+doc._id+"', "+doc.noReap+")\"><i class='fa fa-times-circle' aria-hidden='true'></i></button>"
+                        html += "<button title='Delete Record' class='btn btn-danger btn-sm' onclick=\"deleteDoc('"+doc._id+"')\"><i class='fa fa-trash' aria-hidden='true'></i></button>";
+                        html += "&nbsp; <button title='Toggle Reapable' class='btn btn-warning btn-sm' onclick=\"toggleReap('"+doc._id+"', "+doc.noReap+")\"><i class='fa fa-times-circle' aria-hidden='true'></i></button>";
                         if(!doc.hasOwnProperty('owner')) {
-                            html += "&nbsp; <button title='Take Ownerhip of Cluster' class='btn btn-info btn-sm' onclick=\"takeOnwership('"+doc._id+"')\"><i class='fa fa-user-plus' aria-hidden='true'></i></button>"
+                            html += "&nbsp; <button title='Take Ownerhip of Cluster' class='btn btn-info btn-sm' onclick=\"takeOnwership('"+doc._id+"')\"><i class='fa fa-user-plus' aria-hidden='true'></i></button>";
                         } else {
                             if(doc.owner.id == client.auth.authInfo.userId) {
-                                html += "&nbsp; <button title='Pause Now' class='btn btn-danger btn-sm' onclick=\"reap('"+doc.projectId+"', '"+doc.name+"')\"><i class='fa fa-exclamation-triangle' aria-hidden='true'></i></button>"
+                                html += "&nbsp; <button title='Pause Now' class='btn btn-danger btn-sm' onclick=\"reap('"+doc.projectId+"', '"+doc.name+"')\"><i class='fa fa-exclamation-triangle' aria-hidden='true'></i></button>";
                             }
                         }
                     html+="</td>";
@@ -138,6 +138,8 @@
             function reap(projectId, clusterName){
                 var r = confirm("Really Pause This?");
                 if (r == true) {
+                    $('#ctr_modalbody').html('<img src="https://media.giphy.com/media/3og0IwsCw2b29y2CTC/giphy.gif" />');
+                    $('#ctr_modaltitle').html('Reaping Cluster...');
                     $('#newModal').modal('show');
                     client.callFunction("pauseCluster",[projectId, clusterName]).then(result => {
                         console.log(result);
