@@ -79,6 +79,18 @@
                 }
             }
 
+            function getSizeCode(size) {
+                size = size.substring(1,size.length);
+                size = size * 1;
+                
+                if (size == 0) { return "success"; }
+                else if(size <10) { return "info";}
+                else if(size <30) { return "primary";}
+                else if(size <60) { return "warning";}
+                else if(size <120) { return "danger";}
+                else { return "dark";}
+            }
+
             function refreshClusters() {
                 $('#newModal').modal('show');
                 client.callFunction("generateDailyUseLog",[]).then(result => {
@@ -106,9 +118,10 @@
                     var lnk = "#";
                     if (doc.hasOwnProperty('projectId')) { lnk = "https://cloud.mongodb.com/v2/"+doc.projectId+"#clusters";}
 
-                    var tooltip = "<b>Size: </b>"+doc.size+"<br><b>Rep Factor: </b>"+doc.replicationFactor+"<br><b>Shards: </b>"+doc.numShards;
+                    var tooltip = "<b>Cloud: </b>"+doc.cloud+"<br><b>Rep Factor: </b>"+doc.replicationFactor+"<br><b>Shards: </b>"+doc.numShards;
+                    var pill = '<span class="badge badge-pill badge-'+getSizeCode(doc.size)+'">'+doc.size+'</span>';
                     
-                    html+="<td data-toggle='tooltip' data-html='true' title='"+tooltip+"' data-placement='right'><a href='"+lnk+"' target='_blank'>"+trunc(doc.project)+"/"+trunc(doc.name)+"</a></td>";
+                    html+="<td data-toggle='tooltip' data-html='true' title='"+tooltip+"' data-placement='right'>"+pill+"&nbsp;<a href='"+lnk+"' target='_blank'>"+trunc(doc.project)+"/"+trunc(doc.name)+"</a></td>";
                     html+="<td>"+doc.created.yyyymmdd()+"</td>";
                     html+="<td>"+doc.updated.yyyymmdd()+"</td>";
                     html+="<td>";
