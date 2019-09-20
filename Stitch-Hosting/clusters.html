@@ -130,8 +130,8 @@
                         if(!doc.hasOwnProperty('owner')) {
                             html += "&nbsp; <button title='Take Ownerhip of Cluster' class='btn btn-info btn-sm' onclick=\"takeOnwership('"+doc._id+"')\"><i class='fa fa-user-plus' aria-hidden='true'></i></button>";
                         } else {
-                            if(doc.owner.id == client.auth.authInfo.userId) {
-                                html += "&nbsp; <button title='Pause Now' class='btn btn-danger btn-sm' onclick=\"reap('"+doc.projectId+"', '"+doc.name+"')\"><i class='fa fa-exclamation-triangle' aria-hidden='true'></i></button>";
+                            if((doc.owner.id == client.auth.authInfo.userId) && (!reaped)) {
+                                html += "&nbsp; <button title='Pause Now' class='btn btn-danger btn-sm' onclick=\"reap('"+doc.projectId+"', '"+doc.name+"', '"+doc.size+"')\"><i class='fa fa-exclamation-triangle' aria-hidden='true'></i></button>";
                             }
                         }
                     html+="</td>";
@@ -153,16 +153,20 @@
                 document.location.reload();
             }
 
-            function reap(projectId, clusterName){
-                var r = confirm("Really Pause This?");
-                if (r == true) {
-                    $('#ctr_modalbody').html('<img src="https://media.giphy.com/media/3og0IwsCw2b29y2CTC/giphy.gif" />');
-                    $('#ctr_modaltitle').html('Reaping Cluster...');
-                    $('#newModal').modal('show');
-                    client.callFunction("pauseCluster",[projectId, clusterName]).then(result => {
-                        console.log(result);
-                        setTimeout(function() {location.reload(true);},1500);
-                });
+            function reap(projectId, clusterName, size){
+                if((size == "M0") || (size == "M2") || (size == "M5")) {
+                    alert("Cannot modify low tier clusters via API");
+                } else {
+                    var r = confirm("Really Pause This?");
+                    if (r == true) {
+                        $('#ctr_modalbody').html('<img src="https://media.giphy.com/media/3og0IwsCw2b29y2CTC/giphy.gif" />');
+                        $('#ctr_modaltitle').html('Reaping Cluster...');
+                        $('#newModal').modal('show');
+                        client.callFunction("pauseCluster",[projectId, clusterName]).then(result => {
+                            console.log(result);
+                            setTimeout(function() {location.reload(true);},1500);
+                    });
+                    }
                 }
             }
 
