@@ -10,6 +10,17 @@ There is a simple UI to power that.
 ![](Screenshots/ss02.png)
 ![](Screenshots/ss03.png)
 
+The UI is labeled:
+* Refresh button at top pulls new clusters it finds from Atlas API
+* Trash can deletes DB record of cluster (not terminating the cluster)
+* The X will toggle whether the cluster should be auto-reaped. Default is it will be auto reaped (`noReap:false`)
+* The person is visible on unclaimed clusters. This changes the `owner` field to your info
+* the warning triangle will immediately pause the cluster 
+* Cells that are white will not be auto realed (`noReap:false`)
+* Cells that are yellow are in a warning state
+* Cells that are red means that cluster will be reaped tomorrow
+* Cells that are black means the system paused that cluster
+
 ## Code explanation
 ### Database
 Database used is the `atlasmonitor` database. In it is the `log` collection which gets filled every day with the output of Atlas API calls, triggers run against that to create the `clusters` collection which is used for the UI and business decisions, and if any cluster is paused or deleted, an entry for that API call is made in the `changelog` collection. The `clusters` collection does have a unique index put on  `project:1,name:1` for the project and cluster friendly names.
