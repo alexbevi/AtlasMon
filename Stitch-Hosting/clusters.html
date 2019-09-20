@@ -26,14 +26,14 @@
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav ml-auto" id="navlist">
                         <ul class='navbar-nav'>
-                            <li class="nav-item"><a class="nav-item nav-link btn btn-outline-success btn-lg" onclick="$('#newModal').modal('show');"><i class='fa fa-plus-circle' aria-hidden='true'></i></a></li>
+                            <li class="nav-item"><a class="nav-item nav-link btn btn-outline-success btn-lg" onclick="refreshClusters()"><i class='fa fa-refresh' aria-hidden='true'></i></a></li>
                         </ul>      
                     </div>
                 </div>
             </nav>
 
             <table class="table table-hover" style="margin-top:15px;">
-                <thead class="thead-dark"><tr><th>Email</th><th>Project/Cluster</th><th>Created</th><th>Modified</th><th>Note</th><th>Flags</th></tr></thead>
+                <thead class="thead-dark"><tr><th>Email</th><th>Project/Cluster</th><th>Created</th><th>Modified</th><th>Actions</th></tr></thead>
                 <tbody id="tbody"></tbody>
             </table>
         </div>
@@ -42,30 +42,16 @@
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">New Cluster</h5>
+                  <h5 class="modal-title">Loading Clusters</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                    <label for="txt_project">Project Name</label>
-                    <input type="text" class="form-control" id="txt_project" >
-
-                    <label for="txt_name">Cluster Name</label>
-                    <input type="text" class="form-control" id="txt_name" >
-
-                    <label for="ddl_prevent">Prevent Reaping</label>
-                    <select class="form-control" id="ddl_prevent">
-                        <option>true</option>
-                        <option>false</option>
-                    </select>
-
-                    <label for="txt_note">Note</label>
-                    <textarea class="form-control" id="txt_note" rows="3"></textarea>
+                    <div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" onclick="document.location.reload()">Close</button>
-                  <button type="button" class="btn btn-success" onclick="saveNew()">Save</button>
                 </div>
               </div>
             </div>
@@ -91,12 +77,23 @@
                 }
             }
 
+            function refreshClusters() {
+                $('#newModal').modal('show');
+                client.callFunction("generateDailyUseLog",[]).then(result => {
+                    console.log(result);
+                    setTimeout(function() {location.reload(true);},1500);
+                });
+            }
+
             function presentResult(docs) {
                 docs.map(doc => {
-                    var html = "";
+                    var html = "<tr>";
+                    var warnings = (doc.warnings||0);
+                    var reaped = (doc.reaped||false);
 
-                    if(!doc.noReap) { html += '<tr class="table-danger">';}
-                    else {  html+="<tr>"; }
+                    if(!doc.noReap) { html = '<tr class="table-warning">';}
+                    if(warnings > 0) { html = '<tr class="table-danger">';}
+                    if(reaped) { html = '<tr class="table-dark">';}
 
                     if(doc.hasOwnProperty('owner')) {
                         var eml = doc.owner.email.split('@');
@@ -110,12 +107,15 @@
                     html+="<td><a href='"+lnk+"' target='_blank'>"+trunc(doc.project)+"/"+trunc(doc.name)+"</a></td>";
                     html+="<td>"+doc.created.yyyymmdd()+"</td>";
                     html+="<td>"+doc.updated.yyyymmdd()+"</td>";
-                    html+="<td>"+(doc.note||'')+"</td>";
                     html+="<td>";
-                        html += "<button class='btn btn-danger btn-sm' onclick=\"deleteDoc('"+doc._id+"')\"><i class='fa fa-trash' aria-hidden='true'></i></button>"
-                        html += "&nbsp; <button class='btn btn-warning btn-sm' onclick=\"toggleReap('"+doc._id+"', "+doc.noReap+")\"><i class='fa fa-times-circle' aria-hidden='true'></i></button>"
+                        //html += "<button class='btn btn-danger btn-sm' onclick=\"deleteDoc('"+doc._id+"')\"><i class='fa fa-trash' aria-hidden='true'></i></button>"
+                        html += "<button title='Toggle Reapable' class='btn btn-warning btn-sm' onclick=\"toggleReap('"+doc._id+"', "+doc.noReap+")\"><i class='fa fa-times-circle' aria-hidden='true'></i></button>"
                         if(!doc.hasOwnProperty('owner')) {
-                            html += "&nbsp; <button class='btn btn-info btn-sm' onclick=\"takeOnwership('"+doc._id+"')\"><i class='fa fa-user-plus' aria-hidden='true'></i></button>"
+                            html += "&nbsp; <button title='Take Ownerhip of Cluster' class='btn btn-info btn-sm' onclick=\"takeOnwership('"+doc._id+"')\"><i class='fa fa-user-plus' aria-hidden='true'></i></button>"
+                        } else {
+                            if(doc.owner.id == client.auth.authInfo.userId) {
+                                html += "&nbsp; <button title='Pause Now' class='btn btn-danger btn-sm' onclick=\"reap('"+doc.projectId+"', '"+doc.name+"')\"><i class='fa fa-exclamation-triangle' aria-hidden='true'></i></button>"
+                            }
                         }
                     html+="</td>";
 
@@ -133,6 +133,17 @@
 
             function recordSuccess() {
                 document.location.reload();
+            }
+
+            function reap(projectId, clusterName){
+                var r = confirm("Really Pause This?");
+                if (r == true) {
+                    $('#newModal').modal('show');
+                    client.callFunction("pauseCluster",[projectId, clusterName]).then(result => {
+                        console.log(result);
+                        setTimeout(function() {location.reload(true);},1500);
+                });
+                }
             }
 
             function deleteDoc(id) {
@@ -165,29 +176,6 @@
                 delta.owner.email = client.auth.authInfo.userProfile.data.email;
                 
                 db.collection("clusters").updateOne({"_id":oid},{"$set":delta}).then(result => { location.reload(true); }).catch(err => console.log(err));
-            }
-
-            function saveNew() {
-                var doc = {};
-                doc.created = new Date();
-                doc.updated = new Date();
-                doc.name = $('#txt_name').val();
-                doc.project = $('#txt_project').val();
-                doc.owner = {};
-                doc.owner.id = client.auth.authInfo.userId;
-                doc.owner.email = client.auth.authInfo.userProfile.data.email;
-
-                if($('#txt_note').val().length > 0) {
-                    doc.note = $('#txt_note').val();
-                }
-
-                if($('#ddl_prevent option:selected').text() == "true") {
-                    doc.noReap = true;
-                } else {
-                    doc.noReap = false;
-                }
-
-                db.collection("clusters").insertOne(doc).then(result => { location.reload(true); }).catch(err => console.log(err));
             }
 
             $(function() {

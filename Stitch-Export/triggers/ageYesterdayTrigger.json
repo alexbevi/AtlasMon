@@ -1,0 +1,10 @@
+{
+    "id": "5d8418110f1358236d790331",
+    "name": "ageYesterdayTrigger",
+    "type": "SCHEDULED",
+    "config": {
+        "schedule": "0 1 * * *"
+    },
+    "function_name": "ageYesterday",
+    "disabled": false
+}

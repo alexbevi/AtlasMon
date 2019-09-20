@@ -1,4 +1,4 @@
-exports = async function(arg){
+exports = async function(){
   // get variables
   var conn = context.services.get("mongodb-atlas").db("atlasmonitor").collection("log");
   var orgID = context.values.get("orgID");

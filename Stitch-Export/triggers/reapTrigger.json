@@ -1,0 +1,18 @@
+{
+    "id": "5d841b7ea5bb3ba90e30f70b",
+    "name": "reapTrigger",
+    "type": "DATABASE",
+    "config": {
+        "operation_types": [
+            "UPDATE"
+        ],
+        "database": "atlasmonitor",
+        "collection": "clusters",
+        "service_name": "mongodb-atlas",
+        "match": {},
+        "full_document": true,
+        "unordered": true
+    },
+    "function_name": "reap",
+    "disabled": false
+}
