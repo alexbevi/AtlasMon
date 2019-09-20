@@ -13,7 +13,7 @@ There is a simple UI to power that.
 The UI is labeled:
 * Refresh button at top pulls new clusters it finds from Atlas API
 * Trash can deletes DB record of cluster (not terminating the cluster)
-* The X will toggle whether the cluster should be auto-reaped. Default is it will be auto reaped (`noReap:false`)
+* The clock will toggle whether the cluster should be auto-reaped. Default is it will be auto reaped (`noReap:false`)
 * The person is visible on unclaimed clusters. This changes the `owner` field to your info
 * the warning triangle will immediately pause the cluster 
 * Cells that are white will not be auto realed (`noReap:false`)
