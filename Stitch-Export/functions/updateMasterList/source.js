@@ -16,11 +16,13 @@ exports = function(changeEvent) {
       newdoc.numShards = cList[c].numShards;
       newdoc.replicationFactor = cList[c].replicationFactor;
       newdoc.size = cList[c].providerSettings.instanceSizeName;
+
       try {
         conn.insertOne(newdoc);
       } catch (e) {
         return true;
       }
+      conn.updateOne({name:newdoc.name, project:newdoc.project}, {$set:{reaped:cList[c].paused}});
     }
   }
   
