@@ -1,0 +1,32 @@
+{
+    "id": "5d8670d04a3a1a276191be2b",
+    "database": "atlasmonitor",
+    "collection": "users",
+    "roles": [
+        {
+            "name": "owner",
+            "apply_when": {
+                "user.id": "%%user.id"
+            },
+            "fields": {
+                "pn": {
+                    "write": true
+                }
+            },
+            "read": true,
+            "insert": false,
+            "delete": false,
+            "additional_fields": {}
+        }
+    ],
+    "schema": {
+        "properties": {
+            "_id": {
+                "bsonType": "objectId"
+            },
+            "id": {
+                "bsonType": "string"
+            }
+        }
+    }
+}

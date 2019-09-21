@@ -207,6 +207,10 @@
                 db.collection("clusters").updateOne({"_id":oid},{"$set":delta}).then(result => { location.reload(true); }).catch(err => console.log(err));
             }
 
+            function setMyPhoneNum(pn){
+                db.collection("users").updateOne({"user.id":client.auth.authInfo.userId},{"$set":{pn:pn}}).then(result => { alert("Set your phone!"); }).catch(err => console.log(err));
+            }
+
             $(function() {
                 $('#span_usr').html(client.auth.authInfo.userProfile.data.email);
                 $('#span_usr').click(function() {
