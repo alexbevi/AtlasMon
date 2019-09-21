@@ -9,7 +9,8 @@ exports = function(changeEvent) {
     if(!doc.hasOwnProperty("reaped")){
       var conn = context.services.get("mongodb-atlas").db("atlasmonitor").collection("clusters");
       var n = new Date();
-      conn.updateOne({_id:doc._id}, {$set:{reaped:true, updated:n}});
+      //context.functions.execute("pauseCluster", doc.projectId, doc.name);
+      //conn.updateOne({_id:doc._id}, {$set:{reaped:true, updated:n}});
     }
   }
   
