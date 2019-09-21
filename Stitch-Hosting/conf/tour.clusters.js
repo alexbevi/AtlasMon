@@ -14,10 +14,11 @@ function startTour() {
             backdrop: true
             },
             {
-            element: "td:first",
+            element: "tbody tr:first",
             title: "Rows",
             content: "Row colors can be: white meaning it will not be reaped, yellow meaning it is in warning state of being reaped soon, red meaning it will be reaped tomorrow, or grey meaning it is reaped or paused.",
-            backdrop: true
+            backdrop: true,
+            placement:"bottom"
             },
             {
             element: ".clstrbtn-trash:first",
@@ -41,19 +42,13 @@ function startTour() {
             element: ".clstrbtn-pause:first",
             title: "Pause Button",
             content: "This button will pause the cluster now.",
-            backdrop: true
+            backdrop: true,
+            autoscroll:true
             }
         ],
         name:"clusters",
         storage:false,
-        template:"<div class='popover tour'>\
-        <div class='arrow'></div>\
-        <h3 class='popover-header'></h3>\
-        <div class='popover-body'></div>\
-        <div class='popover-navigation'>\
-          Use the left and right arrow keys to continue the help.\
-        </div>\
-      </div>"
+        framework: "bootstrap4"
     });
   
     tour.init();
