@@ -21,6 +21,7 @@ exports = async function(projectId, clusterName){
     var doc = {};
     var n = new Date();
     doc.queryTime = n;
+    doc.eventType = "pause";
     doc.atlasResponse = JSON.parse(res.body.text());
     log.insertOne(doc);
     conn.updateOne({"projectId":projectId, name:clusterName}, {$set:{updated:n, reaped:true, noReap:false}})
