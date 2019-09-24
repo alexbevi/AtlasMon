@@ -33,6 +33,7 @@
                             
                             <li class="nav-item"><a class="nav-item nav-link btn btn-outline-info btn-lg" onclick="startTour()"><i class='fa fa-question-circle' aria-hidden='true'></i></a></li> &nbsp;
                             <li class="nav-item" id="navgraphs"><a class="nav-item nav-link btn btn-outline-info btn-lg" href="graph.html"><i class='fa fa-bar-chart' aria-hidden='true'></i></a></li> &nbsp;
+                            <li class="nav-item"><a class="nav-item nav-link btn btn-outline-info btn-lg" onclick="promptPhone()"><i class='fa fa-mobile' aria-hidden='true'></i></a></li> &nbsp;
                             <li class="nav-item" id="navrefresh"><a class="nav-item nav-link btn btn-outline-success btn-lg" onclick="refreshClusters()"><i class='fa fa-refresh' aria-hidden='true'></i></a></li>
                         </ul>      
                     </div>
@@ -124,7 +125,7 @@
                     if (doc.hasOwnProperty('projectId')) { lnk = "https://cloud.mongodb.com/v2/"+doc.projectId+"#clusters";}
 
                     var tooltip = "<b>Cloud: </b>"+doc.cloud+"<br><b>Rep Factor: </b>"+doc.replicationFactor+"<br><b>Shards: </b>"+doc.numShards+"<br><b>Warnings: </b>"+(doc.warnings||"0")+"<br><b>Paused: </b>"+doc.reaped;
-                    var pill = '<span class="badge badge-pill badge-'+getSizeCode(doc.size)+'">'+doc.size+'</span>';
+                    var pill = '<span class="badge badge-pill badge-'+getSizeCode(doc.size)+'" style="min-width:45px;">'+doc.size+'</span>';
                     
                     html+="<td data-toggle='tooltip' data-html='true' title='"+tooltip+"' data-placement='right'>"+pill+"&nbsp;<a href='"+lnk+"' target='_blank'>"+trunc(doc.project)+"/"+trunc(doc.name)+"</a></td>";
                     html+="<td>"+doc.created.yyyymmdd()+"</td>";
@@ -206,6 +207,11 @@
                 delta.owner.email = client.auth.authInfo.userProfile.data.email;
                 
                 db.collection("clusters").updateOne({"_id":oid},{"$set":delta}).then(result => { location.reload(true); }).catch(err => console.log(err));
+            }
+
+            function promptPhone() {
+                var pn = prompt("Please enter your phone number. Format is +12345678901","+1");
+                setMyPhoneNum(pn);
             }
 
             function setMyPhoneNum(pn){
