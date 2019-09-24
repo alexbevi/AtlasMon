@@ -41,7 +41,7 @@
             </nav>
 
             <table class="table table-hover" style="margin-top:15px;">
-                <thead class="thead-dark"><tr><th>Email</th><th>Project/Cluster</th><th>Created</th><th>Modified</th><th>Actions</th></tr></thead>
+                <thead class="thead-dark"><tr><th>Email</th><th>Project/Cluster</th><th class="d-none d-lg-table-cell">Created</th><th class="d-none d-lg-table-cell">Modified</th><th>Actions</th></tr></thead>
                 <tbody id="tbody"></tbody>
             </table>
         </div>
@@ -128,8 +128,8 @@
                     var pill = '<span class="badge badge-pill badge-'+getSizeCode(doc.size)+'" style="min-width:45px;">'+doc.size+'</span>';
                     
                     html+="<td data-toggle='tooltip' data-html='true' title='"+tooltip+"' data-placement='right'>"+pill+"&nbsp;<a href='"+lnk+"' target='_blank'>"+trunc(doc.project)+"/"+trunc(doc.name)+"</a></td>";
-                    html+="<td>"+doc.created.yyyymmdd()+"</td>";
-                    html+="<td>"+doc.updated.yyyymmdd()+"</td>";
+                    html+="<td class='d-none d-lg-table-cell'>"+doc.created.yyyymmdd()+"</td>";
+                    html+="<td class='d-none d-lg-table-cell'>"+doc.updated.yyyymmdd()+"</td>";
                     html+="<td>";
                         html += "<button title='Delete Record' class='btn btn-danger btn-sm clstrbtn-trash' onclick=\"deleteDoc('"+doc._id+"')\"><i class='fa fa-trash' aria-hidden='true'></i></button>";
                         html += "&nbsp; <button title='Toggle Reapable' class='btn btn-warning btn-sm clstrbtn-toggle' onclick=\"toggleReap('"+doc._id+"', "+doc.noReap+")\"><i class='fa fa-clock-o' aria-hidden='true'></i></button>";
