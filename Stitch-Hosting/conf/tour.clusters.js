@@ -14,6 +14,12 @@ function startTour() {
             backdrop: true
             },
             {
+            element: "#navphone",
+            title: "Phone Notifications",
+            content: "If you want text notifications for when clusters are paused, press this button and put in your mobile number. It must be in the format +1 followed by your number without other symbols. Like +16091234567",
+            backdrop: true
+            },
+            {
             element: "tbody tr:first",
             title: "Rows",
             content: "Row colors can be: white meaning it will not be reaped, yellow meaning it is in warning state of being reaped soon, red meaning it will be reaped tomorrow, or grey meaning it is reaped or paused.",
