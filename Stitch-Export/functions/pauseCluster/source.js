@@ -24,6 +24,6 @@ exports = async function(projectId, clusterName){
     doc.eventType = "pause";
     doc.atlasResponse = JSON.parse(res.body.text());
     log.insertOne(doc);
-    conn.updateOne({"projectId":projectId, name:clusterName}, {$set:{updated:n, reaped:true, noReap:false}})
+    conn.updateOne({"projectId":projectId, name:clusterName}, {$inc:{reapCount:1}}, {$set:{updated:n, reaped:true, noReap:false}})
   }
 };
