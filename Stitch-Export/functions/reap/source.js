@@ -1,5 +1,7 @@
 exports = function(changeEvent) {
   var doc = changeEvent.fullDocument;
+  var shouldNotReap = (doc.hasOwnProperty("noReap") || false);
+  var alreadyReaped = (doc.hasOwnProperty("reaped") || false);
   
   //if doc.warnings > 1) {
     // send a notification
@@ -7,7 +9,7 @@ exports = function(changeEvent) {
   //}
   
   if(doc.warnings > 2) {
-    if(!doc.hasOwnProperty("reaped")){
+    if(!alreadyReaped && !shouldNotReap){
       var conn = context.services.get("mongodb-atlas").db("atlasmonitor").collection("clusters");
       var n = new Date();
       context.functions.execute("pauseCluster", doc.projectId, doc.name);
