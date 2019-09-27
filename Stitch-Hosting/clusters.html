@@ -126,7 +126,7 @@
                     if (doc.hasOwnProperty('projectId')) { lnk = "https://cloud.mongodb.com/v2/"+doc.projectId+"#clusters";}
 
                     var tooltip = "<b>Cloud: </b>"+doc.cloud+"<br><b>Rep Factor: </b>"+doc.replicationFactor+"<br><b>Shards: </b>"+doc.numShards+"<br><b>Warnings: </b>"+(doc.warnings||"0")+"<br><b>Paused: </b>"+doc.reaped+"<br><b>Times Reaped: </b>"+reapCount;
-                    var pill = '<span class="badge badge-pill badge-'+getSizeCode(doc.size)+'" style="min-width:45px;">'+doc.size+'</span>';
+                    var pill = '<span class="badge badge-pill badge-'+getSizeCode(doc.size)+'" style="min-width:45px;" onclick="alert(\''+doc._id+'\');">'+doc.size+'</span>';
                     
                     html+="<td data-toggle='tooltip' data-html='true' title='"+tooltip+"' data-placement='right'>"+pill+"&nbsp;<a href='"+lnk+"' target='_blank'>"+trunc(doc.project)+"/"+trunc(doc.name)+"</a></td>";
                     html+="<td class='d-none d-lg-table-cell'>"+doc.created.yyyymmdd()+"</td>";
@@ -208,6 +208,12 @@
                 delta.owner.email = client.auth.authInfo.userProfile.data.email;
                 
                 db.collection("clusters").updateOne({"_id":oid},{"$set":delta}).then(result => { location.reload(true); }).catch(err => console.log(err));
+            }
+
+            function forceAssignOwner(oid, owner) {
+                client.callFunction("assignOwner",[oid, owner]).then(result => {
+                    console.log(result);
+                });
             }
 
             function promptPhone() {
