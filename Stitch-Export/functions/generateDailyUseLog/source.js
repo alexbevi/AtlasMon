@@ -36,4 +36,7 @@ exports = async function(){
   // write to DB
   conn.insertOne(doc);
   
+  // delete any stuff from our db that users deleted from atlas
+  context.functions.execute("purgeDeletedClusters");
+  
 };
