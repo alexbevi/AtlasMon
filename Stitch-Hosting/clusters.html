@@ -140,21 +140,20 @@
                     html+="<td class='d-none d-lg-table-cell'>"+doc.updated.yyyymmdd()+"</td>";
                     html+="<td>";
 
-                        if(!isTenant(doc.size)) {
-                            html += "&nbsp; <button title='Toggle Reapable' class='btn btn-warning btn-sm clstrbtn-toggle' onclick=\"toggleReap('"+doc._id+"', "+doc.noReap+")\"><i class='fa fa-clock-o' aria-hidden='true'></i></button>";
-                        } else {
-                            html += "&nbsp; <button title='Reaping cannot be toggled on Tenant clusters' class='btn btn-secondary btn-sm' onclick=\"alert('Tenant clusters cannot be modified.')\"><i class='fa fa-clock-o' aria-hidden='true'></i></button>";
-                        }
-
                         if(!doc.hasOwnProperty('owner')) {
                             html += "&nbsp; <button title='Take Ownerhip of Cluster' class='btn btn-info btn-sm clstrbtn-own' onclick=\"takeOnwership('"+doc._id+"')\"><i class='fa fa-user-plus' aria-hidden='true'></i></button>";
                         } else {
                             if(doc.owner.id == client.auth.authInfo.userId) {
                                 html += "&nbsp; <button title='Delete Record' class='btn btn-danger btn-sm clstrbtn-trash' onclick=\"deleteDoc('"+doc._id+"')\"><i class='fa fa-trash' aria-hidden='true'></i></button>";
+                                if(!isTenant(doc.size)) {
+                                    html += "&nbsp; <button title='Toggle Reapable' class='btn btn-warning btn-sm clstrbtn-toggle' onclick=\"toggleReap('"+doc._id+"', "+doc.noReap+")\"><i class='fa fa-clock-o' aria-hidden='true'></i></button>";
+                                } else {
+                                    html += "&nbsp; <button title='Reaping cannot be toggled on Tenant clusters' class='btn btn-secondary btn-sm' onclick=\"alert('Tenant clusters cannot be modified.')\"><i class='fa fa-clock-o' aria-hidden='true'></i></button>";
+                                }
                             }
 
                             if((doc.owner.id == client.auth.authInfo.userId) && (!reaped) && (!isTenant(doc.size))) {
-                                html += "&nbsp; <button title='Pause Now' class='btn btn-danger btn-sm clstrbtn-pause' onclick=\"reap('"+doc.projectId+"', '"+doc.name+"', '"+doc.size+"')\"><i class='fa fa-exclamation-triangle' aria-hidden='true'></i></button>";
+                                html += "&nbsp; <button title='Pause Now' class='btn btn-danger btn-sm clstrbtn-pause' onclick=\"reap('"+doc.projectId+"', '"+doc.name+"', '"+doc.size+"')\"><i class='fa fa-pause' aria-hidden='true'></i></button>";
                             }
                         }
                         if(isAdmin) {
@@ -162,6 +161,7 @@
                                 html += '<a class="dropdown-item" onclick="deleteDoc(\''+doc._id+'\');">Delete Record from DB</a>';
                                 html += '<a class="dropdown-item" onclick="forceAssignOwnerPromp(\''+doc._id+'\');">Force Assign</a>';
                                 html += '<a class="dropdown-item" onclick="reap(\''+doc.projectId+'\', \''+doc.name+'\', \''+doc.size+'\');">Pause Now</a>';
+                                html += '<a class="dropdown-item" onclick="toggleReap(\''+doc._id+'\', \''+doc.noReap+'\');">Toggle Reapable</a>';
                             html += '</div></div>';
                         }
                     html+="</td>";
