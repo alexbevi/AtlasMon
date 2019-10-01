@@ -97,6 +97,11 @@
                 else { return "dark";}
             }
 
+            function isTenant(size) {
+                if((size == "M0") || (size == "M2") || (size == "M5")) { return true;}
+                else { return false; }
+            }
+
             function refreshClusters() {
                 $('#newModal').modal('show');
                 client.callFunction("generateDailyUseLog",[]).then(result => {
@@ -115,6 +120,7 @@
                     if(!doc.noReap) { html = '<tr class="table-warning">';}
                     if(warnings > 0) { html = '<tr class="table-danger">';}
                     if(reaped) { html = '<tr class="table-dark">';}
+                    if(isTenant(doc.size)) { html = '<tr>';}
 
                     if(doc.hasOwnProperty('owner')) {
                         var eml = doc.owner.email.split('@');
@@ -133,11 +139,15 @@
                     html+="<td class='d-none d-lg-table-cell'>"+doc.updated.yyyymmdd()+"</td>";
                     html+="<td>";
                         html += "<button title='Delete Record' class='btn btn-danger btn-sm clstrbtn-trash' onclick=\"deleteDoc('"+doc._id+"')\"><i class='fa fa-trash' aria-hidden='true'></i></button>";
-                        html += "&nbsp; <button title='Toggle Reapable' class='btn btn-warning btn-sm clstrbtn-toggle' onclick=\"toggleReap('"+doc._id+"', "+doc.noReap+")\"><i class='fa fa-clock-o' aria-hidden='true'></i></button>";
+                        if(!isTenant(doc.size)) {
+                            html += "&nbsp; <button title='Toggle Reapable' class='btn btn-warning btn-sm clstrbtn-toggle' onclick=\"toggleReap('"+doc._id+"', "+doc.noReap+")\"><i class='fa fa-clock-o' aria-hidden='true'></i></button>";
+                        } else {
+                            html += "&nbsp; <button title='Reaping cannot be toggled on Tenant clusters' class='btn btn-secondary btn-sm' onclick=\"alert('Tenant clusters cannot be modified.')\"><i class='fa fa-clock-o' aria-hidden='true'></i></button>";
+                        }
                         if(!doc.hasOwnProperty('owner')) {
                             html += "&nbsp; <button title='Take Ownerhip of Cluster' class='btn btn-info btn-sm clstrbtn-own' onclick=\"takeOnwership('"+doc._id+"')\"><i class='fa fa-user-plus' aria-hidden='true'></i></button>";
                         } else {
-                            if((doc.owner.id == client.auth.authInfo.userId) && (!reaped)) {
+                            if((doc.owner.id == client.auth.authInfo.userId) && (!reaped) && (!isTenant(doc.size))) {
                                 html += "&nbsp; <button title='Pause Now' class='btn btn-danger btn-sm clstrbtn-pause' onclick=\"reap('"+doc.projectId+"', '"+doc.name+"', '"+doc.size+"')\"><i class='fa fa-exclamation-triangle' aria-hidden='true'></i></button>";
                             }
                         }
