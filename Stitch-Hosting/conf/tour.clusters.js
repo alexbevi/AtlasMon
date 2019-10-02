@@ -50,6 +50,15 @@ function startTour() {
             content: "This button will pause the cluster now.",
             backdrop: true,
             autoscroll:true
+            },
+            {
+            element: ".dropdown-toggle:first",
+            title: "Admin Menu",
+            content: "If you see this menu, it means you are an admin and have extra capabilities you can do on each cluster.",
+            autoscroll:true,
+            onShown(tour) {
+                $('.dropdown-toggle:first').click();
+            }
             }
         ],
         name:"clusters",
