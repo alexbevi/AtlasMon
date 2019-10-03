@@ -1,0 +1,10 @@
+{
+    "id": "5d95fe07c86c26d750437a55",
+    "name": "getBilling",
+    "type": "SCHEDULED",
+    "config": {
+        "schedule": "0 */2 * * *"
+    },
+    "function_name": "getPendingBill",
+    "disabled": false
+}
