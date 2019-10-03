@@ -5,3 +5,4 @@ config.json
 .DS_Store
 Stitch-Export/values/atlasAPI.json
 Stitch-Hosting/conf/charts.js
+Stitch-Hosting/conf/clusters.js
