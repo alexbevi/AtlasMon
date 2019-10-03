@@ -3,7 +3,7 @@ exports = async function(toUserId, message){
   const twilio = context.services.get("twil");
   const ourNumber = context.values.get("twilphone");
   
-  var docs = await conn.find({"user.id":toUserId}).toArray();
+  var docs = await conn.find({"user.id":toUserId},{pn:1}).toArray();
   for(var i = 0; i < docs.length; i++) {
     twilio.send({
       from: ourNumber,
