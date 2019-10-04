@@ -3,7 +3,7 @@
     "name": "getBilling",
     "type": "SCHEDULED",
     "config": {
-        "schedule": "0 */2 * * *"
+        "schedule": "0 */8 * * *"
     },
     "function_name": "getPendingBill",
     "disabled": false
