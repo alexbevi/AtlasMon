@@ -1,11 +1,25 @@
 [{$sort: {
-  queryTime: -1
-}}, {$limit: 1}, {$unwind: {
-  path: '$atlasResponse.lineItems'
+  queryTime:-1
+}}, {$limit: 1}, {$project: {
+  measurements: {
+    $slice: [
+      '$measurements',
+      -1
+    ]
+  }
+}}, {$unwind: {
+  path: '$measurements'
+}}, {$unwind: {
+  path: '$measurements.atlasResponse.lineItems'
 }}, {$group: {
-  _id: '$_id',
+  _id: {
+    $dateToString: {
+      date: '$measurements.queryTime',
+      format: '%Y-%m-%d'
+    }
+  },
   spendCents: {
-    $sum: '$atlasResponse.lineItems.totalPriceCents'
+    $sum: '$measurements.atlasResponse.lineItems.totalPriceCents'
   }
 }}, {$project: {
   spend: {

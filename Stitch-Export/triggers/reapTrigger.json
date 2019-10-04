@@ -4,8 +4,7 @@
     "type": "DATABASE",
     "config": {
         "operation_types": [
-            "UPDATE",
-            "REPLACE"
+            "UPDATE"
         ],
         "database": "atlasmonitor",
         "collection": "clusters",
