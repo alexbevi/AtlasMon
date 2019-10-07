@@ -1,9 +1,16 @@
-[{$project: {
-  measurements:{$slice:["$measurements",-1]}
+[{$sort: {
+  lastQueryTime:-1
+}}, {$limit: 1}, {$project: {
+  measurements: {
+    $slice: [
+      '$measurements',
+      -1
+    ]
+  }
 }}, {$unwind: {
-  path: "$measurements"
+  path: '$measurements'
 }}, {$unwind: {
-  path: "$measurements.atlasResponse.lineItems"
+  path: '$measurements.atlasResponse.lineItems'
 }}, {$group: {
   _id: {
     $dateToString: {
