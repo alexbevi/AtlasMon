@@ -14,10 +14,13 @@ function startTour() {
             backdrop: true
             },
             {
-            element: "#navphone",
-            title: "Phone Notifications",
-            content: "If you want text notifications for when clusters are paused, press this button and put in your mobile number. It must be in the format +1 followed by your number without other symbols. Like +16091234567",
-            backdrop: true
+            element: "#navuser",
+            title: "User Settings",
+            content: "Expanding this menu includes options to scoll page to your clusters, set text message notifications, and log out. <br><br>If you want text notifications for when clusters are paused, press this button and put in your mobile number. It must be in the format +1 followed by your number without other symbols. Like +16091234567",
+            backdrop: true,
+            onShown(tour) {
+                $('#navbarDropdownMenuLink').click();
+            }
             },
             {
             element: "tbody tr:first",
