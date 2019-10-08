@@ -5,6 +5,6 @@
     "config": {
         "schedule": "0 2 * * *"
     },
-    "function_name": "generateDailyUseLog",
+    "function_name": "generateDailyUsageLogFromTrigger",
     "disabled": false
 }

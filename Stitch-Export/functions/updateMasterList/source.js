@@ -22,7 +22,7 @@ exports = function(changeEvent) {
       } catch (e) {
         return true;
       }
-      conn.updateOne({name:newdoc.name, project:newdoc.project}, {$set:{reaped:cList[c].paused, cloud:cList[c].providerSettings.providerName}});
+      conn.updateOne({name:newdoc.name, project:newdoc.project}, {$set:{reaped:cList[c].paused, cloud:cList[c].providerSettings.providerName, changeSrc:doc.src}});
     }
   }
   

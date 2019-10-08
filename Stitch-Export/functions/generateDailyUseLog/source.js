@@ -1,4 +1,4 @@
-exports = async function(){
+exports = async function(src){
   // get variables
   var conn = context.services.get("mongodb-atlas").db("atlasmonitor").collection("log");
   var orgID = context.values.get("orgID");
@@ -18,6 +18,7 @@ exports = async function(){
   doc.queryTime = new Date();
   doc.atlasOrgResponse = JSON.parse(res.body.text());
   doc.projects = [];
+  doc.src = src;
   
     
   for(var orgNum = 0; orgNum < doc.atlasOrgResponse.results.length; orgNum++) {

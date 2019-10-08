@@ -108,7 +108,7 @@
 
             function refreshClusters() {
                 $('#newModal').modal('show');
-                client.callFunction("generateDailyUseLog",[]).then(result => {
+                client.callFunction("generateDailyUseLog",["web"]).then(result => {
                     console.log(result);
                     setTimeout(function() {location.reload(true);},1500);
                 });
