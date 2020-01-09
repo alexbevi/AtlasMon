@@ -25,5 +25,9 @@ exports = async function(projectId, clusterName){
     doc.atlasResponse = JSON.parse(res.body.text());
     log.insertOne(doc);
     conn.updateOne({"projectId":projectId, name:clusterName}, {$inc:{reapCount:1}}, {$set:{updated:n, reaped:true, noReap:false}})
+    
+    console.log(doc);
+    
+    return doc;
   }
 };

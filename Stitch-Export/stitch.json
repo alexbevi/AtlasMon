@@ -8,5 +8,8 @@
     "hosting": {
         "enabled": true,
         "app_default_domain": "atlasmon-vlmdi.mongodbstitch.com"
+    },
+    "custom_user_data_config": {
+        "enabled": false
     }
 }

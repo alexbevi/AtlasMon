@@ -20,6 +20,15 @@ exports = async function(){
   doc.queryTime = n;
   doc.atlasResponse = JSON.parse(res.body.text());
   
+  // get rid of crap
+  delete doc.atlasResponse.links;
+  delete doc.atlasResponse.payments;
+  delete doc.atlasResponse.refunds;
+  delete doc.atlasResponse.salesTaxCents;
+  delete doc.atlasResponse.amountPaidCents;
+  delete doc.atlasResponse.startingBalanceCents;
+  delete doc.atlasResponse.statusName;
+  
   // write to DB
   const opt = {upsert:true};
   const query = {ymd:{year:n.getFullYear(), mo:(n.getMonth()+1), d:n.getDay() }};
