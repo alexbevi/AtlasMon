@@ -1,24 +1,17 @@
-[
-  {$sort: {
+[{$sort: {
   queryTime: -1
-}}, 
-{$limit: 1}, 
-{$unwind: {
+}}, {$limit: 1}, {$unwind: {
   path: '$projects'
-}}, 
-{$project: {
+}}, {$project: {
   projectName: '$projects.name',
   'projects.clustersResponse.results.name': 1,
   'projects.clustersResponse.results.paused': 1
-}}, 
-{$project: {
+}}, {$project: {
   projectName: 1,
   clusters: '$projects.clustersResponse.results'
-}}, 
-{$unwind: {
+}}, {$unwind: {
   path: '$clusters'
-}}, 
-{$project: {
+}}, {$project: {
   _id: 0,
   projectName: 1,
   cluster: '$clusters.name',
@@ -36,5 +29,4 @@
       '-'
     ]
   }
-}}
-]
+}}]
