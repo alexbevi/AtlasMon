@@ -1,6 +1,7 @@
 exports = async function(){
   // get variables
-  var conn = context.services.get("mongodb-atlas").db("atlasmonitor").collection("billing");
+  var bconn = context.services.get("mongodb-atlas").db("atlasmonitor").collection("billingnobucket");
+  var nconn = context.services.get("mongodb-atlas").db("atlasmonitor").collection("billing");
   var orgID = context.values.get("orgID");
   var apiRoot = context.values.get("apiRoot");
   var apiKey = context.values.get("atlasAPI");
@@ -33,6 +34,7 @@ exports = async function(){
   const opt = {upsert:true};
   const query = {ymd:{year:n.getFullYear(), mo:(n.getMonth()+1), d:n.getDay() }};
   const up = {$push: {measurements:doc}, $set:{lastQueryTime:n}};
-  conn.updateOne(query, up, opt);
+  bconn.updateOne(query, up, opt);
+  nconn.insertOne(doc);
   
 };

@@ -17,6 +17,7 @@ exports = async function(src){
   var doc = {};
   doc.queryTime = new Date();
   doc.atlasOrgResponse = JSON.parse(res.body.text());
+  console.log(res.body.text());
   doc.projects = [];
   doc.src = src;
   
