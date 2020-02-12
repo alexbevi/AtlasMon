@@ -1,31 +1,17 @@
-[{$sort: {
-  lastQueryTime:-1
-}}, {$limit: 1}, {$project: {
-  measurements: {
-    $slice: [
-      '$measurements',
-      -1
-    ]
+// graph of day by day usage
+// billingnobucket
+[{
+  $project: {
+      ymd: 1,
+      t: {
+          $dateFromParts: {
+              year: "$ymd.year",
+              month: "$ymd.mo",
+              day: "$ymd.d"
+          }
+      },
+      m: {
+          $arrayElemAt: ["$measurements", -1]
+      }
   }
-}}, {$unwind: {
-  path: '$measurements'
-}}, {$unwind: {
-  path: '$measurements.atlasResponse.lineItems'
-}}, {$group: {
-  _id: {
-    $dateToString: {
-      date: '$measurements.queryTime',
-      format: '%Y-%m-%d'
-    }
-  },
-  spendCents: {
-    $sum: '$measurements.atlasResponse.lineItems.totalPriceCents'
-  }
-}}, {$project: {
-  spend: {
-    $multiply: [
-      0.01,
-      '$spendCents'
-    ]
-  }
-}}]
+}]

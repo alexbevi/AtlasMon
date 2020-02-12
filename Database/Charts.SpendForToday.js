@@ -1,17 +1,22 @@
-[{$sort: {
-    queryTime: -1
-  }}, {$limit: 1}, {$unwind: {
-    path: '$atlasResponse.lineItems'
-  }}, {$group: {
-    _id: '$_id',
-    spendCents: {
-      $sum: '$atlasResponse.lineItems.totalPriceCents'
-    }
-  }}, {$project: {
-    spend: {
-      $multiply: [
-        0.01,
-        '$spendCents'
-      ]
-    }
-  }}]
+//billingnobucket
+[{
+  $sort: {
+      lastQueryTime: -1
+  }
+}, {
+  $limit: 1
+}, {
+  $project: {
+      ymd: 1,
+      t: {
+          $dateFromParts: {
+              year: "$ymd.year",
+              month: "$ymd.mo",
+              day: "$ymd.d"
+          }
+      },
+      m: {
+          $arrayElemAt: ["$measurements", -1]
+      }
+  }
+}]
