@@ -163,11 +163,13 @@
                     }
 
                     // TD Status
-                    if(status=="NOREAP") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is saved and will not be reaped."><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></td>'}
-                    if(status=="WARNING") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster will be paused within next 3 days"><i class="fa fa-exclamation" aria-hidden="true" ></i></td>';}
-                    if(status=="DANGER") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster will be paused tomorrow!"><i class="fa fa-exclamation-triangle" aria-hidden="true" ></i></td>;'}
-                    if(status=="PAUSED") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is paused"><i class="fa fa-pause-circle-o" aria-hidden="true"></i></td>';}
-                    if(status=="TENANT") { html += '<td data-toggle="tooltip" data-placement="right" title="Multi Tenant Cluster"><i class="fa fa-users" aria-hidden="true"></i></td>';}
+                    var weekends = "";
+                    if(doc.pauseWeekends == true) { weekends = '&nbsp;<i class="fa fa-calendar-minus-o" aria-hidden="true" title="Pased on weekends"></i>' ;}
+                    if(status=="NOREAP") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is saved and will not be reaped."><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> '+weekends+'</td>'}
+                    if(status=="WARNING") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster will be paused within next 3 days"><i class="fa fa-exclamation" aria-hidden="true" ></i>'+weekends+'</td>';}
+                    if(status=="DANGER") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster will be paused tomorrow!"><i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>'+weekends+'</td>;'}
+                    if(status=="PAUSED") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is paused"><i class="fa fa-pause-circle-o" aria-hidden="true"></i>'+weekends+'</td>';}
+                    if(status=="TENANT") { html += '<td data-toggle="tooltip" data-placement="right" title="Multi Tenant Cluster"><i class="fa fa-users" aria-hidden="true"></i>'+weekends+'</td>';}
 
                     // TD Project/Cluster
                     var lnk = "#";
@@ -211,6 +213,7 @@
                                 html += '<a class="dropdown-item" onclick="forceAssignOwnerPromp(\''+doc._id+'\');">Force Assign</a>';
                                 html += '<a class="dropdown-item" onclick="reap(\''+doc.projectId+'\', \''+doc.name+'\', \''+doc.size+'\');">Pause Now</a>';
                                 html += '<a class="dropdown-item" onclick="toggleReap(\''+doc._id+'\', \''+doc.noReap+'\');">Toggle Reapable</a>';
+                                html += '<a class="dropdown-item" onclick="toggleWeekend(\''+doc._id+'\', \''+doc.pauseWeekends+'\');">Reap On Weekends</a>';
                             html += '</div></div>';
                         }
                     html+="</td>";
