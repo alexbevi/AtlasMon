@@ -1,0 +1,10 @@
+{
+    "id": "5e727136ea94fbd3430dbd8f",
+    "name": "unpauseClustersEndOfWeekendTrigger",
+    "type": "SCHEDULED",
+    "config": {
+        "schedule": "0 1 * * 1"
+    },
+    "function_name": "unpaseWeekends",
+    "disabled": false
+}

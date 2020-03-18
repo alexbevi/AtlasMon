@@ -53,7 +53,7 @@
             <div class="container"><div class="row" id="ctr_charts" ></div></div>
 
             <table class="table table-hover" style="margin-top:15px;">
-                <thead class="thead-dark"><tr><th>Email</th><th>Project/Cluster</th><th class="d-none d-lg-table-cell">Created</th><th class="d-none d-lg-table-cell">Modified</th><th>Actions</th></tr></thead>
+                <thead class="thead-dark"><tr><th>Email</th><th>Status</th><th>Project/Cluster</th><th class="d-none d-lg-table-cell">Created</th><th>Actions</th></tr></thead>
                 <tbody id="tbody"></tbody>
             </table>
         </div>
@@ -146,17 +146,30 @@
                     var reaped = (doc.reaped||false);
                     var reapCount = (doc.reapCount||0);
 
-                    if(!doc.noReap) { html = '<tr class="table-warning">';}
-                    if(warnings > 0) { html = '<tr class="table-danger">';}
-                    if(reaped) { html = '<tr class="table-dark">';}
-                    if(isTenant(doc.size)) { html = '<tr>';}
+                    var status = -1;
 
+                    if(!doc.noReap) { html = '<tr class="table-warning">'; status="WARNING";}
+                    if(warnings > 0) { html = '<tr class="table-danger">'; status="DANGER";}
+                    if(reaped) { html = '<tr class="table-dark">'; status="PAUSED";}
+                    if(isTenant(doc.size)) { html = '<tr>'; status="TENANT"; }
+                    if (status==-1) { html = "<tr>"; status="NOREAP"; }
+
+                    // TD email
                     if(doc.hasOwnProperty('owner')) {
                         var eml = doc.owner.email.split('@');
                         html+="<td data-owner='"+doc.owner.email+"'>"+eml[0]+"</td>";
                     } else {
                         html+="<td>"+'UNKWN'+"</td>";
                     }
+
+                    // TD Status
+                    if(status=="NOREAP") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is saved and will not be reaped."><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></td>'}
+                    if(status=="WARNING") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster will be paused within next 3 days"><i class="fa fa-exclamation" aria-hidden="true" ></i></td>';}
+                    if(status=="DANGER") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster will be paused tomorrow!"><i class="fa fa-exclamation-triangle" aria-hidden="true" ></i></td>;'}
+                    if(status=="PAUSED") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is paused"><i class="fa fa-pause-circle-o" aria-hidden="true"></i></td>';}
+                    if(status=="TENANT") { html += '<td data-toggle="tooltip" data-placement="right" title="Multi Tenant Cluster"><i class="fa fa-users" aria-hidden="true"></i></td>';}
+
+                    // TD Project/Cluster
                     var lnk = "#";
                     if (doc.hasOwnProperty('projectId')) { lnk = "https://cloud.mongodb.com/v2/"+doc.projectId+"#clusters";}
 
@@ -164,20 +177,29 @@
                     var pill = '<span class="badge badge-pill badge-'+getSizeCode(doc.size)+'" style="min-width:45px;" onclick="alert(\''+doc._id+'\');">'+doc.size+'</span>';
                     
                     html+="<td data-toggle='tooltip' data-html='true' title='"+tooltip+"' data-placement='right'>"+pill+"&nbsp;<a href='"+lnk+"' target='_blank'>"+trunc(doc.project)+"/"+trunc(doc.name)+"</a></td>";
+                    
+                    
+                    // TD Created
                     html+="<td class='d-none d-lg-table-cell'>"+doc.created.yyyymmdd()+"</td>";
-                    html+="<td class='d-none d-lg-table-cell'>"+doc.updated.yyyymmdd()+"</td>";
-                    html+="<td>";
 
+                    // TD Updated
+                    //html+="<td class='d-none d-lg-table-cell'>"+doc.updated.yyyymmdd()+"</td>";
+
+                    // TD Actions
+                    html+="<td>";
                         if(!doc.hasOwnProperty('owner')) {
                             html += "&nbsp; <button title='Take Ownerhip of Cluster' class='btn btn-info btn-sm clstrbtn-own' onclick=\"takeOnwership('"+doc._id+"')\"><i class='fa fa-user-plus' aria-hidden='true'></i></button>";
                         } else {
                             if(doc.owner.id == client.auth.authInfo.userId) {
-                                html += "&nbsp; <button title='Delete Record' class='btn btn-danger btn-sm clstrbtn-trash' onclick=\"deleteDoc('"+doc._id+"')\"><i class='fa fa-trash' aria-hidden='true'></i></button>";
                                 if(!isTenant(doc.size)) {
                                     html += "&nbsp; <button title='Toggle Reapable' class='btn btn-warning btn-sm clstrbtn-toggle' onclick=\"toggleReap('"+doc._id+"', "+doc.noReap+")\"><i class='fa fa-clock-o' aria-hidden='true'></i></button>";
                                 } else {
                                     html += "&nbsp; <button title='Reaping cannot be toggled on Tenant clusters' class='btn btn-secondary btn-sm' onclick=\"alert('Tenant clusters cannot be modified.')\"><i class='fa fa-clock-o' aria-hidden='true'></i></button>";
                                 }
+
+                                var twcolor = "danger";
+                                if(doc.pauseWeekends == true) { twcolor = "success";}
+                                html+= "&nbsp; <button title='Pause Weekends' class='btn btn-"+twcolor+" btn-sm clstrbtn-toggle' onclick=\"toggleWeekend('"+doc._id+"', "+doc.pauseWeekends+")\"><i class='fa fa-calendar-minus-o' aria-hidden='true'></i></button>";
                             }
 
                             if((doc.owner.id == client.auth.authInfo.userId) && (!reaped) && (!isTenant(doc.size))) {
@@ -186,7 +208,6 @@
                         }
                         if(isAdmin) {
                             html += '&nbsp;<div class="btn-group"><button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></button><div class="dropdown-menu">';
-                                html += '<a class="dropdown-item" onclick="deleteDoc(\''+doc._id+'\');">Delete Record from DB</a>';
                                 html += '<a class="dropdown-item" onclick="forceAssignOwnerPromp(\''+doc._id+'\');">Force Assign</a>';
                                 html += '<a class="dropdown-item" onclick="reap(\''+doc.projectId+'\', \''+doc.name+'\', \''+doc.size+'\');">Pause Now</a>';
                                 html += '<a class="dropdown-item" onclick="toggleReap(\''+doc._id+'\', \''+doc.noReap+'\');">Toggle Reapable</a>';
@@ -217,7 +238,7 @@
                 } else {
                     var r = confirm("Really Pause This?");
                     if (r == true) {
-                        $('#ctr_modalbody').html('<img src="https://media.giphy.com/media/3og0IwsCw2b29y2CTC/giphy.gif" />');
+                        $('#ctr_modalbody').html('<img src="https://i.giphy.com/3oEduIwLTB806poveg.gif" />');
                         $('#ctr_modaltitle').html('Reaping Cluster...');
                         $('#newModal').modal('show');
                         client.callFunction("pauseCluster",[projectId, clusterName]).then(result => {
@@ -244,6 +265,18 @@
                 var delta = {};
                 delta.updated = new Date();
                 delta.noReap = !tf;
+                delta.warnings = 0;
+                
+                db.collection("clusters").updateOne({"_id":oid},{"$set":delta}).then(result => { location.reload(true); }).catch(err => console.log(err));
+            }
+
+            function toggleWeekend(id,tf) {
+                if(tf==undefined) { tf = false; }
+                var oid = new stitch.BSON.ObjectId(id);
+
+                var delta = {};
+                delta.updated = new Date();
+                delta.pauseWeekends = !tf;
                 delta.warnings = 0;
                 
                 db.collection("clusters").updateOne({"_id":oid},{"$set":delta}).then(result => { location.reload(true); }).catch(err => console.log(err));

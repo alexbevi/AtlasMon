@@ -1,0 +1,10 @@
+{
+    "id": "5e7270f227c37407816fc24c",
+    "name": "pauseOnWeekendsTrigger",
+    "type": "SCHEDULED",
+    "config": {
+        "schedule": "0 23 * * 5"
+    },
+    "function_name": "pauseWeekends",
+    "disabled": false
+}
