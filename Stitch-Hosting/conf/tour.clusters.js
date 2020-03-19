@@ -25,7 +25,7 @@ function startTour() {
             {
             element: "tbody tr:first",
             title: "Rows",
-            content: "Row colors can be: white meaning it will not be reaped, yellow meaning it is in warning state of being reaped soon, red meaning it will be reaped tomorrow, or grey meaning it is reaped or paused.",
+            content: "Rows and their cooresponding icons tell you what is going on. Hover over the Status icon if you are unsure. Colors: white means it will not be reaped (thumbs up icon), yellow means it is in warning state of being reaped soon (exclamation icon), red means it will be reaped tomorrow (exclamation in triangle icon), or grey meaning it is reaped or paused (pause icon), green means it is a protected cluster (lock icon), and light blue means it is paused and unpaused on weekends (calendar with dash icon). Additionally a status icon of three people means it is a tenant cluster and cannot be controlled.",
             backdrop: true,
             placement:"bottom"
             },
