@@ -11,15 +11,31 @@ There is a simple UI to power that.
 ![](Screenshots/ss03.png)
 
 The UI is labeled:
-* Refresh button at top pulls new clusters it finds from Atlas API
-* Trash can deletes DB record of cluster (not terminating the cluster)
-* The clock will toggle whether the cluster should be auto-reaped. Default is it will be auto reaped (`noReap:false`)
-* The person is visible on unclaimed clusters. This changes the `owner` field to your info
-* the warning triangle will immediately pause the cluster 
-* Cells that are white will not be auto realed (`noReap:false`)
-* Cells that are yellow are in a warning state
-* Cells that are red means that cluster will be reaped tomorrow
-* Cells that are black means the system paused that cluster
+* Top Bar:
+   * Refresh button at top pulls new clusters it finds from Atlas API
+   * The chart icon will take you to the charts page
+   * Clicking the person icon will reveal a drop down that allows you to set your phone number and scroll down to your clusters
+* Actions column (right most column in table):
+   * The clock will toggle whether the cluster should be auto-reaped. Default is it will be auto reaped (`noReap:false`)
+   * The blue person button is visible on unclaimed clusters. This changes the `owner` field to your info
+   * the warning triangle button will immediately pause the cluster 
+   * If you are an admin (controlled via the `validAdmins` Value array in Stitch) you will see a drop down menu with more options
+* Row Color Coding
+   * Rows that are white will not be auto realed (`noReap:true`)
+   * Rows that are yellow are in a warning state (`noReap:false, warnings:{$lt:3}`)
+   * Rows that are red means that cluster will be reaped tomorrow (`noReap:false, warnings:{$gte:3}`)
+   * Rows that are black means the cluster is paused (`reaped:true`)
+   * Rows that are light blue means that the cluster will be paused on Friday nights and resumed Monday mornings (weekend) (`pausedWeekends:true`)
+   * Rows that are green have a manual `protected:true` flag on the document which means they will never be reaped regardless of any other flags and status. You must set this field in the collection manually in Compass or the CLI.
+* Status column (second column from the left) icons:
+   * Hover over the icons here for the description
+   * Group of people - Tenant cluster and cannot be modified via the API
+   * Pause - Cluster is paused (`reaped:true`)
+   * Thumbs up - cluster will not be reaped (`noReap:true`)
+   * Lock - cluster is protected (`protected:true`)
+   * Exclamation - warning state (`noReap:false, warnings:{$lt:3}`)
+   * Exclamation in triangle - danger state (`noReap:false, warnings:{$gte:3}`)
+   * Calendar with dash - pause on weekends (`pausedWeekends:true`)
 
 ## Code explanation
 ### Database
