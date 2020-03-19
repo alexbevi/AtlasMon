@@ -145,14 +145,16 @@
                     var warnings = (doc.warnings||0);
                     var reaped = (doc.reaped||false);
                     var reapCount = (doc.reapCount||0);
-
+                    var protected = (doc.protected||false);
                     var status = -1;
 
                     if(!doc.noReap) { html = '<tr class="table-warning">'; status="WARNING";}
                     if(warnings > 0) { html = '<tr class="table-danger">'; status="DANGER";}
                     if(reaped) { html = '<tr class="table-dark">'; status="PAUSED";}
                     if(isTenant(doc.size)) { html = '<tr>'; status="TENANT"; }
-                    if (status==-1) { html = "<tr>"; status="NOREAP"; }
+                    if(status==-1) { html = "<tr>"; status="NOREAP"; }
+                    if(doc.pauseWeekends == true) { html = '<tr class="table-info">'; status="WEEKEND"; }
+                    if(protected) { html = '<tr class="table-success">'; status="PROTECT";}
 
                     // TD email
                     if(doc.hasOwnProperty('owner')) {
@@ -163,13 +165,13 @@
                     }
 
                     // TD Status
-                    var weekends = "";
-                    if(doc.pauseWeekends == true) { weekends = '&nbsp;<i class="fa fa-calendar-minus-o" aria-hidden="true" title="Pased on weekends"></i>' ;}
-                    if(status=="NOREAP") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is saved and will not be reaped."><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> '+weekends+'</td>'}
-                    if(status=="WARNING") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster will be paused within next 3 days"><i class="fa fa-exclamation" aria-hidden="true" ></i>'+weekends+'</td>';}
-                    if(status=="DANGER") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster will be paused tomorrow!"><i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>'+weekends+'</td>;'}
-                    if(status=="PAUSED") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is paused"><i class="fa fa-pause-circle-o" aria-hidden="true"></i>'+weekends+'</td>';}
-                    if(status=="TENANT") { html += '<td data-toggle="tooltip" data-placement="right" title="Multi Tenant Cluster"><i class="fa fa-users" aria-hidden="true"></i>'+weekends+'</td>';}
+                    if(status=="WEEKEND") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is saved will only be reaped on weekends."><i class="fa fa-calendar-minus-o" aria-hidden="true"></i></td>'}
+                    if(status=="NOREAP") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is saved and will not be reaped."><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></td>'}
+                    if(status=="WARNING") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster will be paused within next 3 days"><i class="fa fa-exclamation" aria-hidden="true" ></i></td>';}
+                    if(status=="DANGER") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster will be paused tomorrow!"><i class="fa fa-exclamation-triangle" aria-hidden="true" ></i></td>;'}
+                    if(status=="PAUSED") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is paused"><i class="fa fa-pause-circle-o" aria-hidden="true"></i></td>';}
+                    if(status=="TENANT") { html += '<td data-toggle="tooltip" data-placement="right" title="Multi Tenant Cluster"><i class="fa fa-users" aria-hidden="true"></i></td>';}
+                    if(status=="PROTECT") { html += '<td data-toggle="tooltip" data-placement="right" title="Cluster is globally protected."><i class="fa fa-lock" aria-hidden="true"></i></td>';}
 
                     // TD Project/Cluster
                     var lnk = "#";
