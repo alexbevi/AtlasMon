@@ -30,12 +30,6 @@ function startTour() {
             placement:"bottom"
             },
             {
-            element: ".clstrbtn-trash:first",
-            title: "Trash Can",
-            content: "This button removes the record from the DB only.",
-            backdrop: true
-            },
-            {
             element: ".clstrbtn-toggle:first",
             title: "Clock Button",
             content: "This button toggles the flag of whether it should be reaped.",
