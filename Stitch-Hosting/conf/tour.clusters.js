@@ -49,12 +49,12 @@ function startTour() {
             autoscroll:true
             },
             {
-            element: ".dropdown-toggle:first",
+            element: ".dropdown-toggle:last",
             title: "Admin Menu",
             content: "If you see this menu, it means you are an admin and have extra capabilities you can do on each cluster.",
             autoscroll:true,
             onShown(tour) {
-                $('.dropdown-toggle:first').click();
+                $('.dropdown-toggle:last').click();
             }
             }
         ],
