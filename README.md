@@ -25,6 +25,8 @@ The UI is labeled:
 ### Database
 Database used is the `atlasmonitor` database. In it is the `log` collection which gets filled every day with the output of Atlas API calls, triggers run against that to create the `clusters` collection which is used for the UI and business decisions, and if any cluster is paused or deleted, an entry for that API call is made in the `changelog` collection. The `clusters` collection does have a unique index put on  `project:1,name:1` for the project and cluster friendly names.
 
+*NEW FEATURE* is that if the `cluster` document has a field `protected:true` then the cluster will never be reaped. This intentionally cannot be set via the web interface. You must manually set it in the document so that it is a deliberate choice. You should do this on the cluster running the reaper for self preservation.
+
 ### Stitch
 In the `Stitch-Export` folder is the export of the stitch app that uses the following code:
 
